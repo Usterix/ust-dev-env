@@ -1,0 +1,38 @@
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Add sudoers users to wheel group
+  user:
+    name: vagrant
+    password: "{{ 'vagrant'|password_hash('sha512') }}"
+    groups: wheel
+    append: yes
+    state: present
+    createhome: yes
+
+- name: Install "zip" package
+  apt:
+    name: zip
+
+- name: download wp-cli
+  become: true
+  get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp
+
+- name: update permissions of wp-cli to allow anyone to execute it (should be only for local install!)
+  file: path=/usr/local/bin/wp mode="0755"
+- name: ensure sudo keeps SSH_AUTH_SOCK in environment
+  copy: src=env
+        dest=/etc/sudoers.d/env
+        mode=0440
+        owner=root
+        group=root

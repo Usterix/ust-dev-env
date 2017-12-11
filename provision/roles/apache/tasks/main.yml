@@ -1,0 +1,40 @@
+- name: Update repositories cache and install "apache2" package
+  apt:
+    name: apache2
+    update_cache: yes
+
+- name: Set default ServerName for Apache
+  lineinfile: dest=/etc/apache2/apache2.conf
+              line='ServerName dev.usterix.tech'
+              state=present
+
+- name: Enable mod_vhost_alias for apache
+  apache2_module:
+    state: present
+    name: vhost_alias
+- name: Enable mod_rewrite for apache
+  apache2_module:
+    state: present
+    name: rewrite
+
+- name: Update Apache conf to look for php files
+  template: src=dir.conf dest=/etc/apache2/mods-enabled/dir.conf
+
+- name: Set correct firewall rule to allow Apache access
+  ufw:
+    rule: allow
+    name: 'Apache Full'
+
+- name: create fatherly virtual host file
+  template: src=vhost.conf dest=/etc/apache2/sites-available/{{ domain }}.conf
+
+- name: tell apache to enable the site {{ domain }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{ domain }}.conf
+  command: a2ensite {{ domain }}
+
+- name: tell Apache to disable the default site
+  command: a2dissite 000-default.conf
+
+- name: Restarting Apache
+  service: name=apache2 state=restarted

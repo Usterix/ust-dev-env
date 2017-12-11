@@ -1,0 +1,28 @@
+- name: Install php packages
+  apt: name={{item}} state=installed
+  with_items:
+       - php7.0
+       - libapache2-mod-php7.0
+       - php7.0-cli
+       - php7.0-common
+       - php7.0-mbstring
+       - php7.0-gd
+       - php7.0-intl
+       - php7.0-xml
+       - php7.0-mysql
+       - php7.0-mcrypt
+       - php7.0-zip
+       - php-xdebug
+- name: install Composer
+  apt:
+    name: composer
+
+- name: Configure Xdebug for remote debugging
+  lineinfile: dest=/etc/php/7.0/mods-available/xdebug.ini line={{ item.line }}
+  with_items:
+    - {line: 'xdebug.remote_enable=on' }
+    - {line: 'xdebug.remote_connect_back=on' }
+    - {line: 'xdebug.remote_host=10.100.20.38' }
+    - {line: 'xdebug.idekey=\"vagrant\"' }
+- name: Restarting Apache so that xdebug changes take effect
+  service: name=apache2 state=restarted

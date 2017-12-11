@@ -1,0 +1,7 @@
+- name: Install MariaDB
+  apt:
+    name: mariadb-server
+- name: install python mysql bindings
+  apt: name=python-mysqldb state=installed
+#- name: Install the Python MySQLB module
+#  pip: name=MySQL-python

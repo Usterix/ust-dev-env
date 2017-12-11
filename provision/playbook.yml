@@ -1,0 +1,18 @@
+- hosts: all
+  gather_facts: False
+  become: true
+  tasks:
+  - name: install python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: default
+  user: ubuntu
+  become: true
+  vars:
+    http_port: 80
+    domain: dev.usterix.tech
+  roles:
+    - misc
+    - apache
+    - mysql
+    - php

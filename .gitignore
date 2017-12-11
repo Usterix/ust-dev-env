@@ -1,0 +1,6 @@
+/public_html/home/*
+!/public_html/home
+/public_html/sites/*
+!/public_html/sites
+.idea
+.vagrant
