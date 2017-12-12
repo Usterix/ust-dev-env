@@ -11,6 +11,8 @@
   vars:
     http_port: 80
     domain: dev.usterix.tech
+    mysql_root_password: root
+    NEW_mysql_root_password: root
   roles:
     - misc
     - apache

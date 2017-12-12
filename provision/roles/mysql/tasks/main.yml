@@ -3,5 +3,5 @@
     name: mariadb-server
 - name: install python mysql bindings
   apt: name=python-mysqldb state=installed
-#- name: Install the Python MySQLB module
-#  pip: name=MySQL-python
+- name: Create user on DB
+  mysql_user: login_user=root login_password=root name=usterix password=usterix123 priv=*.*:ALL state=present

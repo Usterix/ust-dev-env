@@ -13,8 +13,8 @@ Vagrant.configure("2") do |config|
         ansible.playbook = "provision/playbook.yml"
     end
     config.vm.provider "virtualbox" do |v|
-       v.memory = 2048
-       v.cpus = 2
+       v.memory = 4096
+       v.cpus = 4
        v.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
     end
     # Optional NFS. Make sure to remove other synced_folder line too
